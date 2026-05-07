@@ -1,0 +1,17 @@
+# Local development overrides. Do NOT commit secrets.
+# In production (Render), set MONGO_URL via Render dashboard / render.yaml env vars.
+
+# Backend
+backend/__pycache__/
+backend/.env
+
+# Frontend
+frontend/node_modules/
+frontend/build/
+frontend/.env.local
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+*.log
