@@ -38,8 +38,21 @@ const Footer = () => {
           })}
         </div>
       </div>
-      <div className="text-center text-xs text-slate-500 pb-6">
-        {config.footer_text || `© ${new Date().getFullYear()} ${config.site_name || 'IE Valdivia'} - Portal Educativo`}
+      <div className="text-center text-xs text-slate-500 pb-6 space-y-2">
+        <p>
+          {config.footer_text || `© ${new Date().getFullYear()} ${config.site_name || 'IE Valdivia'} - Portal Educativo`}
+        </p>
+        <div className="pt-2 border-t border-blue-500/5 max-w-xs mx-auto">
+          <p className="text-blue-400/60 font-medium tracking-wide uppercase text-[10px]">
+            Desarrollado con orgullo por
+          </p>
+          <p className="text-blue-300/80 font-bold text-sm mt-0.5">
+            Isai Alexander Ortiz Ortiz
+          </p>
+          <p className="text-slate-400/70 italic">
+            Estudiante de 11-2
+          </p>
+        </div>
       </div>
     </footer>
   );
