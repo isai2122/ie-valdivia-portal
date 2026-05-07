@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { SiteDataProvider } from './context/SiteDataContext';
 import Navbar from './components/Navbar';
+import AnnouncementBar from './components/AnnouncementBar';
 import Footer from './components/Footer';
 import AdminPanel from './components/AdminPanel';
 import Home from './pages/Home';
@@ -21,6 +22,7 @@ function Shell() {
   const [logoOpen, setLogoOpen] = useState(false);
   return (
     <div className="min-h-screen iev-gradient-bg text-slate-100 flex flex-col">
+      <AnnouncementBar />
       <Navbar onEditLogo={() => setLogoOpen(true)} />
       <main className="flex-1">
         <Routes>

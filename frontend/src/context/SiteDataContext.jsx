@@ -9,13 +9,15 @@ export const SiteDataProvider = ({ children }) => {
   const [news, setNews] = useState([]);
   const [projects, setProjects] = useState([]);
   const [videos, setVideos] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
+  const [achievements, setAchievements] = useState([]);
   const [about, setAbout] = useState(null);
   const [social, setSocial] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
     try {
-      const [c, b, n, p, v, a, s] = await Promise.all([
+      const [c, b, n, p, v, a, s, ann, ach] = await Promise.all([
         api.get('/config'),
         api.get('/banners'),
         api.get('/news'),
@@ -23,6 +25,8 @@ export const SiteDataProvider = ({ children }) => {
         api.get('/videos'),
         api.get('/about'),
         api.get('/social'),
+        api.get('/announcements'),
+        api.get('/achievements'),
       ]);
       setConfig(c.data);
       setBanners(b.data);
@@ -31,6 +35,8 @@ export const SiteDataProvider = ({ children }) => {
       setVideos(v.data);
       setAbout(a.data);
       setSocial(s.data);
+      setAnnouncements(ann.data);
+      setAchievements(ach.data);
     } catch (e) { console.error('refresh err', e); }
     finally { setLoading(false); }
   }, []);
@@ -42,7 +48,7 @@ export const SiteDataProvider = ({ children }) => {
   }, [refresh]);
 
   return (
-    <SiteDataContext.Provider value={{ config, banners, news, projects, videos, about, social, loading, refresh, setConfig, setBanners, setNews, setProjects, setVideos, setAbout, setSocial }}>
+    <SiteDataContext.Provider value={{ config, banners, news, projects, videos, announcements, achievements, about, social, loading, refresh, setConfig, setBanners, setNews, setProjects, setVideos, setAnnouncements, setAchievements, setAbout, setSocial }}>
       {children}
     </SiteDataContext.Provider>
   );

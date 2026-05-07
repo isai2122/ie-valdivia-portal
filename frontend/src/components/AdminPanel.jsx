@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSiteData } from '../context/SiteDataContext';
-import { Settings, Image as ImageIcon, Newspaper, FolderKanban, Building2, Globe, Sparkles, LogOut, Video as VideoIcon, KeyRound } from 'lucide-react';
+import { Settings, Image as ImageIcon, Newspaper, FolderKanban, Building2, Globe, Sparkles, LogOut, Video as VideoIcon, KeyRound, Trophy } from 'lucide-react';
 import LogoEditor from './admin/LogoEditor';
 import BannerEditor from './admin/BannerEditor';
 import NewsEditor from './admin/NewsEditor';
@@ -11,12 +11,16 @@ import AboutEditor from './admin/AboutEditor';
 import SocialEditor from './admin/SocialEditor';
 import SiteConfigEditor from './admin/SiteConfigEditor';
 import PasswordEditor from './admin/PasswordEditor';
+import AnnouncementsEditor from './admin/AnnouncementsEditor';
+import AchievementsEditor from './admin/AchievementsEditor';
 
 const btnColors = {
   user: 'bg-rose-500',
   password: 'bg-amber-500',
   config: 'bg-red-500',
   banner: 'bg-cyan-500',
+  announcements: 'bg-yellow-500',
+  achievements: 'bg-indigo-500',
   about: 'bg-orange-500',
   news: 'bg-emerald-500',
   projects: 'bg-purple-500',
@@ -48,6 +52,12 @@ const AdminPanel = ({ logoOpen, setLogoOpen }) => {
         <button onClick={() => setOpen('banner')} className={`iev-floating ${btnColors.banner}`} title="Editar banners">
           <ImageIcon className="w-5 h-5" />
         </button>
+        <button onClick={() => setOpen('announcements')} className={`iev-floating ${btnColors.announcements}`} title="Pizarra Digital (Avisos)">
+          <Sparkles className="w-5 h-5" />
+        </button>
+        <button onClick={() => setOpen('achievements')} className={`iev-floating ${btnColors.achievements}`} title="Galería de Orgullo Valdiviano">
+          <Trophy className="w-5 h-5" />
+        </button>
         <button onClick={() => setOpen('about')} className={`iev-floating ${btnColors.about}`} title="Sobre Nosotros">
           <Building2 className="w-5 h-5" />
         </button>
@@ -73,6 +83,8 @@ const AdminPanel = ({ logoOpen, setLogoOpen }) => {
       <ProjectsEditor open={open === 'projects'} onClose={close} />
       <VideosEditor open={open === 'videos'} onClose={close} />
       <AboutEditor open={open === 'about'} onClose={close} />
+      <AnnouncementsEditor open={open === 'announcements'} onClose={close} />
+      <AchievementsEditor open={open === 'achievements'} onClose={close} />
       <SocialEditor open={open === 'social'} onClose={close} />
     </>
   );

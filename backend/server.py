@@ -202,6 +202,44 @@ class VideoCreate(BaseModel):
     order: int = 0
 
 
+# Announcement (Avisos Urgentes)
+class Announcement(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    text: str
+    type: str = "info"  # info, warning, danger, success
+    active: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class AnnouncementCreate(BaseModel):
+    text: str
+    type: str = "info"
+    active: bool = True
+
+
+# Achievement (Orgullo Valdiviano)
+class Achievement(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    student_name: str = ""
+    grade: str = ""
+    description: str = ""
+    image_url: str = ""
+    date: str = ""
+    featured: bool = True
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class AchievementCreate(BaseModel):
+    title: str
+    student_name: str = ""
+    grade: str = ""
+    description: str = ""
+    image_url: str = ""
+    date: str = ""
+    featured: bool = True
+
+
 # ============= AUTH =============
 async def verify_admin(authorization: Optional[str] = Header(None)):
     if not authorization or not authorization.startswith("Bearer "):
@@ -514,6 +552,78 @@ async def delete_video(vid: str, _admin: bool = Depends(verify_admin)):
     res = await db.videos.delete_one({"id": vid})
     if res.deleted_count == 0:
         raise HTTPException(404, "Video no encontrado")
+    return {"success": True}
+
+
+# ============= ANNOUNCEMENTS =============
+@api_router.get("/announcements", response_model=List[Announcement])
+async def get_announcements():
+    items = await db.announcements.find().sort("created_at", -1).to_list(50)
+    for it in items:
+        it.pop("_id", None)
+    return [Announcement(**i) for i in items]
+
+
+@api_router.post("/announcements", response_model=Announcement)
+async def create_announcement(a: AnnouncementCreate, _admin: bool = Depends(verify_admin)):
+    obj = Announcement(**a.model_dump())
+    await db.announcements.insert_one(obj.model_dump())
+    return obj
+
+
+@api_router.put("/announcements/{aid}", response_model=Announcement)
+async def update_announcement(aid: str, a: AnnouncementCreate, _admin: bool = Depends(verify_admin)):
+    existing = await db.announcements.find_one({"id": aid})
+    if not existing:
+        raise HTTPException(404, "Aviso no encontrado")
+    data = a.model_dump()
+    await db.announcements.update_one({"id": aid}, {"$set": data})
+    existing.update(data)
+    existing.pop("_id", None)
+    return Announcement(**existing)
+
+
+@api_router.delete("/announcements/{aid}")
+async def delete_announcement(aid: str, _admin: bool = Depends(verify_admin)):
+    res = await db.announcements.delete_one({"id": aid})
+    if res.deleted_count == 0:
+        raise HTTPException(404, "Aviso no encontrado")
+    return {"success": True}
+
+
+# ============= ACHIEVEMENTS =============
+@api_router.get("/achievements", response_model=List[Achievement])
+async def get_achievements():
+    items = await db.achievements.find().sort("created_at", -1).to_list(100)
+    for it in items:
+        it.pop("_id", None)
+    return [Achievement(**i) for i in items]
+
+
+@api_router.post("/achievements", response_model=Achievement)
+async def create_achievement(a: AchievementCreate, _admin: bool = Depends(verify_admin)):
+    obj = Achievement(**a.model_dump())
+    await db.achievements.insert_one(obj.model_dump())
+    return obj
+
+
+@api_router.put("/achievements/{aid}", response_model=Achievement)
+async def update_achievement(aid: str, a: AchievementCreate, _admin: bool = Depends(verify_admin)):
+    existing = await db.achievements.find_one({"id": aid})
+    if not existing:
+        raise HTTPException(404, "Logro no encontrado")
+    data = a.model_dump()
+    await db.achievements.update_one({"id": aid}, {"$set": data})
+    existing.update(data)
+    existing.pop("_id", None)
+    return Achievement(**existing)
+
+
+@api_router.delete("/achievements/{aid}")
+async def delete_achievement(aid: str, _admin: bool = Depends(verify_admin)):
+    res = await db.achievements.delete_one({"id": aid})
+    if res.deleted_count == 0:
+        raise HTTPException(404, "Logro no encontrado")
     return {"success": True}
 
 
