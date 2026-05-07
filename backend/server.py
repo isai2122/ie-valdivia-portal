@@ -537,6 +537,17 @@ async def search(q: str = ""):
 
 app.include_router(api_router)
 
+@app.on_event("startup")
+async def startup_event():
+    port = int(os.environ.get("PORT", 8000))
+    logger.info(f"Portal IE Valdivia arrancando en el puerto {port}")
+    try:
+        await db.command("ping")
+        logger.info("Conexión exitosa a MongoDB Atlas")
+    except Exception as e:
+        logger.error(f"Error conectando a MongoDB: {e}")
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
