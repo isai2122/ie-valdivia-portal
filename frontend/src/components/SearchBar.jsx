@@ -19,13 +19,13 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 mt-8">
-      <form onSubmit={submit} className="iev-card p-2 flex items-center gap-2">
-        <Search className="w-5 h-5 text-blue-300 ml-3" />
+    <div className="max-w-4xl mx-auto px-4 md:px-6 mt-6 md:mt-8">
+      <form onSubmit={submit} className="iev-card p-1.5 md:p-2 flex items-center gap-2">
+        <Search className="w-5 h-5 text-blue-300 ml-2 md:ml-3 shrink-0" />
         <input value={q} onChange={(e) => setQ(e.target.value)}
-               placeholder="Buscar noticias, proyectos o contenido..."
-               className="flex-1 bg-transparent outline-none text-slate-100 placeholder-slate-400 px-2" />
-        <button type="submit" className="iev-blue-btn">Buscar</button>
+               placeholder="Buscar contenido..."
+               className="flex-1 bg-transparent outline-none text-slate-100 placeholder-slate-400 px-1 md:px-2 text-sm md:text-base min-w-0" />
+        <button type="submit" className="iev-blue-btn py-1.5 md:py-2 px-4 md:px-6 text-sm md:text-base">Buscar</button>
       </form>
       {loading && <p className="text-slate-400 text-sm mt-3 px-2">Buscando...</p>}
       {results && (

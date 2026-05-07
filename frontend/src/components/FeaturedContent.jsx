@@ -14,9 +14,9 @@ const FeaturedContent = () => {
   const [activeVideo, setActiveVideo] = useState(null);
 
   return (
-    <section className="max-w-7xl mx-auto px-6 mt-12">
-      <h2 className="text-2xl md:text-3xl font-bold text-white text-center flex items-center justify-center gap-2">
-        <Sparkles className="w-6 h-6 text-blue-300" /> Contenido Destacado
+    <section className="max-w-7xl mx-auto px-4 md:px-6 mt-10 md:mt-12">
+      <h2 className="text-xl md:text-3xl font-bold text-white text-center flex items-center justify-center gap-2">
+        <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-blue-300" /> Contenido Destacado
       </h2>
 
       {totalFeatured === 0 && (
@@ -32,7 +32,7 @@ const FeaturedContent = () => {
       {featuredNews.length > 0 && (
         <div className="mt-8">
           <h3 className="text-blue-300 font-semibold mb-3 flex items-center gap-2"><Newspaper className="w-4 h-4" /> Noticias destacadas</h3>
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
             {featuredNews.map((n) => (
               <Link to={`/noticias/${n.id}`} key={n.id} className="iev-card overflow-hidden hover:scale-[1.01] transition-transform">
                 {n.image_url && <img src={n.image_url} alt={n.title} className="w-full h-40 object-cover" />}
@@ -50,7 +50,7 @@ const FeaturedContent = () => {
       {featuredVideos.length > 0 && (
         <div className="mt-8">
           <h3 className="text-blue-300 font-semibold mb-3 flex items-center gap-2"><VideoIcon className="w-4 h-4" /> Videos destacados</h3>
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
             {featuredVideos.map((v) => {
               const thumb = v.thumbnail_url || (isYouTube(v.video_url) ? getYouTubeThumbnail(v.video_url) : '');
               return (
@@ -78,7 +78,7 @@ const FeaturedContent = () => {
       {featuredProjects.length > 0 && (
         <div className="mt-8">
           <h3 className="text-blue-300 font-semibold mb-3 flex items-center gap-2"><FolderKanban className="w-4 h-4" /> Proyectos destacados</h3>
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
             {featuredProjects.map((p) => (
               <Link to={`/proyectos/${p.id}`} key={p.id} className="iev-card overflow-hidden hover:scale-[1.01] transition-transform">
                 {p.image_url && <img src={p.image_url} alt={p.title} className="w-full h-40 object-cover" />}
