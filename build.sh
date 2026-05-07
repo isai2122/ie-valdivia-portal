@@ -19,9 +19,9 @@ fi
 
 echo "==> Building React frontend"
 if command -v yarn >/dev/null 2>&1; then
-  yarn build
+  CI=false yarn build
 else
-  npm run build
+  CI=false npm run build
 fi
 
 cd ..
