@@ -562,7 +562,10 @@ logger = logging.getLogger(__name__)
 
 # Serve React frontend build (for production single-URL deployment like Render)
 FRONTEND_BUILD = ROOT_DIR.parent / "frontend" / "build"
+logger.info(f"FRONTEND_BUILD path: {FRONTEND_BUILD.absolute()}")
+logger.info(f"FRONTEND_BUILD exists: {FRONTEND_BUILD.exists()}")
 if FRONTEND_BUILD.exists():
+    logger.info("Serving frontend build from " + str(FRONTEND_BUILD))
     # Static assets (JS, CSS, images)
     static_dir = FRONTEND_BUILD / "static"
     if static_dir.exists():
@@ -582,6 +585,8 @@ if FRONTEND_BUILD.exists():
         if index_file.exists():
             return FileResponse(index_file)
         raise HTTPException(status_code=404, detail="Frontend build not found")
+else:
+    logger.error("FRONTEND_BUILD directory NOT FOUND at " + str(FRONTEND_BUILD))
 
 
 @app.on_event("shutdown")
