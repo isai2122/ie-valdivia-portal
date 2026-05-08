@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Panel — MetanoSRGAN Elite v5.5</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0e1a; --card: #111827; --card2: #1a2235;
+    --border: #1e3a5f; --accent: #00d4ff; --green: #00ff88;
+    --yellow: #ffd700; --orange: #ff8c00; --red: #ff2244;
+    --purple: #a855f7; --text: #e2e8f0; --muted: #64748b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #0d1b2e 0%, #0a1628 100%);
+    border-bottom: 2px solid var(--border); padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo { font-size: 20px; font-weight: 900; color: var(--accent); }
+  .logo span { color: var(--green); }
+  .badge {
+    background: rgba(255, 34, 68, 0.15); color: var(--red);
+    padding: 3px 8px; border-radius: 4px; font-size: 10px;
+    font-weight: 700; letter-spacing: 0.5px;
+    border: 1px solid rgba(255, 34, 68, 0.3); margin-left: 8px;
+  }
+  .user-chip {
+    background: var(--card2); border: 1px solid var(--border);
+    border-radius: 999px; padding: 6px 14px; display: flex;
+    align-items: center; gap: 8px; font-size: 13px;
+  }
+  .role-pill {
+    background: var(--red); color: white; padding: 2px 8px;
+    border-radius: 4px; font-size: 10px; font-weight: 800;
+  }
+  .btn-logout {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); padding: 8px 14px; border-radius: 6px;
+    cursor: pointer; font-size: 12px;
+  }
+  .btn-logout:hover { color: var(--red); border-color: var(--red); }
+  /* Layout */
+  .layout { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 60px); }
+  .sidebar {
+    background: var(--card); border-right: 1px solid var(--border);
+    padding: 20px 0; position: sticky; top: 60px; height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+  .nav-item {
+    padding: 12px 20px; cursor: pointer; font-size: 13px;
+    color: var(--muted); border-left: 3px solid transparent;
+    display: flex; align-items: center; gap: 10px;
+    transition: all 0.15s;
+  }
+  .nav-item:hover { color: var(--text); background: rgba(0, 212, 255, 0.05); }
+  .nav-item.active {
+    color: var(--accent); border-left-color: var(--accent);
+    background: rgba(0, 212, 255, 0.08);
+  }
+  .nav-icon { width: 18px; text-align: center; font-size: 14px; }
+  .main { padding: 28px; max-width: 1400px; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .h-title {
+    font-size: 22px; font-weight: 800; margin-bottom: 4px;
+    color: var(--text);
+  }
+  .h-sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+  /* Stats grid */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin-bottom: 24px;
+  }
+  .stat-card {
+    background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px;
+  }
+  .stat-label { font-size: 11px; text-transform: uppercase;
+                 color: var(--muted); letter-spacing: 0.8px; margin-bottom: 6px; }
+  .stat-value { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .stat-card.success .stat-value { color: var(--green); }
+  .stat-card.warning .stat-value { color: var(--orange); }
+  .stat-card.danger .stat-value { color: var(--red); }
+  .stat-card.purple .stat-value { color: var(--purple); }
+  /* Cards */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px; margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: 14px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--accent); margin-bottom: 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 10px 12px; color: var(--muted);
+       font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+       border-bottom: 1px solid var(--border); background: var(--card2); }
+  td { padding: 10px 12px; border-bottom: 1px solid rgba(30, 58, 95, 0.4); }
+  tr:hover td { background: rgba(0, 212, 255, 0.03); }
+  .pill {
+    display: inline-block; padding: 3px 9px; border-radius: 999px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+  }
+  .pill.admin { background: rgba(255, 34, 68, 0.18); color: var(--red); }
+  .pill.operador { background: rgba(255, 140, 0, 0.18); color: var(--orange); }
+  .pill.viewer { background: rgba(0, 212, 255, 0.18); color: var(--accent); }
+  .pill.active { background: rgba(0, 255, 136, 0.18); color: var(--green); }
+  .pill.inactive { background: rgba(100, 116, 139, 0.18); color: var(--muted); }
+  /* Buttons */
+  .btn {
+    background: linear-gradient(135deg, var(--accent), #0095bb);
+    color: #001a26; border: none; border-radius: 6px;
+    padding: 8px 14px; font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: transform 0.15s; text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn.sm { padding: 5px 10px; font-size: 11px; }
+  .btn.danger { background: linear-gradient(135deg, var(--red), #aa1a30); color: white; }
+  .btn.warning { background: linear-gradient(135deg, var(--orange), #c66a00); color: white; }
+  .btn.green { background: linear-gradient(135deg, var(--green), #00aa55); color: #001a0e; }
+  .btn.outline { background: transparent; border: 1px solid var(--border);
+                  color: var(--muted); }
+  .btn.outline:hover { color: var(--accent); border-color: var(--accent); }
+  /* Forms */
+  .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 12px; margin-bottom: 12px; }
+  .form-group label {
+    display: block; font-size: 11px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px; font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; background: var(--card2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 9px 12px; color: var(--text);
+    font-size: 13px; outline: none;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+  /* Modal */
+  .modal {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
+    display: none; align-items: center; justify-content: center; z-index: 200;
+    padding: 20px;
+  }
+  .modal.active { display: flex; }
+  .modal-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 28px; max-width: 600px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 212, 255, 0.2);
+  }
+  .modal-title {
+    font-size: 18px; font-weight: 700; color: var(--accent);
+    margin-bottom: 18px;
+  }
+  .modal-actions {
+    display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;
+  }
+  /* Toast */
+  .toast-stack {
+    position: fixed; bottom: 20px; right: 20px; z-index: 300;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .toast {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 4px solid var(--accent); padding: 12px 16px;
+    border-radius: 8px; min-width: 280px; font-size: 13px;
+    animation: slideIn 0.3s; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  }
+  .toast.error { border-left-color: var(--red); color: var(--red); }
+  .toast.success { border-left-color: var(--green); color: var(--green); }
+  @keyframes slideIn { from { transform: translateX(120%); } to { transform: translateX(0); } }
+  /* Code block */
+  pre.code {
+    background: #050810; border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px; font-size: 11px;
+    overflow-x: auto; color: var(--green); font-family: 'Courier New', monospace;
+    white-space: pre-wrap; word-break: break-all;
+  }
+  .checkbox-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;
+    margin-top: 8px;
+  }
+  .checkbox-grid label {
+    display: flex; align-items: center; gap: 6px; font-size: 12px;
+    color: var(--text); cursor: pointer;
+    background: var(--card2); padding: 6px 10px; border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .live-dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green); animation: pulse 1.5s infinite;
+    margin-right: 6px;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+  .loader {
+    display: inline-block; width: 14px; height: 14px;
+    border: 2px solid var(--border); border-top-color: var(--accent);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── Responsive (tablet/móvil) ──────────────────────────────────────────── */
+  .menu-toggle { display: none; background: transparent; border: 1px solid var(--border);
+                 color: var(--text); padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 16px; }
+  @media (max-width: 900px) {
+    .menu-toggle { display: inline-block; }
+    .layout { grid-template-columns: 1fr; }
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0; width: 240px;
+      transform: translateX(-100%); transition: transform 0.25s; z-index: 200;
+      padding-top: 80px; box-shadow: 8px 0 24px rgba(0, 0, 0, 0.5);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .main { padding: 16px; }
+    .header { padding: 12px 14px; }
+    .logo { font-size: 16px; }
+    .badge { font-size: 9px; padding: 2px 6px; }
+    .user-chip { padding: 4px 10px; font-size: 12px; }
+    .header > div:last-child { gap: 6px; }
+    .h-title { font-size: 18px; }
+    .stat-value { font-size: 22px; }
+    .stat-card { padding: 12px; }
+    table { font-size: 11px; }
+    th, td { padding: 6px 8px; }
+    .modal-box { padding: 18px; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    #liveStatus { display: none; }
+    .header-info { display: none; }
+    .role-pill { display: none; }
+    .checkbox-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<header class="header">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')" data-testid="menu-toggle">☰</button>
+    <span class="logo">Metano<span>SRGAN</span></span>
+    <span class="badge">v5.5 ADMIN</span>
+  </div>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <span style="font-size:12px; color:var(--muted);">
+      <span class="live-dot"></span><span id="liveStatus">Conectando…</span>
+    </span>
+    <div class="user-chip">
+      <span data-testid="header-user-name" id="userName">…</span>
+      <span class="role-pill" data-testid="header-user-role" id="userRole">…</span>
+    </div>
+    <button class="btn-logout" onclick="logout()" data-testid="logout-btn">Cerrar Sesión</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')" data-testid="nav-dashboard"><span class="nav-icon">▣</span> Dashboard</div>
+    <div class="nav-item" data-tab="users" onclick="switchTab('users')" data-testid="nav-users"><span class="nav-icon">◉</span> Usuarios</div>
+    <div class="nav-item" data-tab="plans" onclick="switchTab('plans')" data-testid="nav-plans"><span class="nav-icon">♚</span> Planes</div>
+    <div class="nav-item" data-tab="tickets" onclick="switchTab('tickets')" data-testid="nav-tickets"><span class="nav-icon">◇</span> Tickets <span id="ticketsBadge" style="display:none;background:#ff2244;color:white;border-radius:999px;padding:1px 7px;font-size:10px;font-weight:700;margin-left:6px;">0</span></div>
+    <div class="nav-item" data-tab="scheduler" onclick="switchTab('scheduler')" data-testid="nav-scheduler"><span class="nav-icon">⏱</span> Scheduler</div>
+    <div class="nav-item" data-tab="audit" onclick="switchTab('audit')" data-testid="nav-audit"><span class="nav-icon">◈</span> Auditoría</div>
+    <div class="nav-item" data-tab="health" onclick="switchTab('health')" data-testid="nav-health"><span class="nav-icon">♥</span> Salud Sistema</div>
+    <div style="margin-top: 24px; padding: 0 20px;">
+      <a href="/app" style="color: var(--muted); font-size: 12px; text-decoration: none;" data-testid="link-app">
+        → Ver dashboard de usuario
+      </a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- Dashboard -->
+    <section class="section active" id="sec-dashboard">
+      <h1 class="h-title">Resumen del Sistema</h1>
+      <p class="h-sub">Estadísticas globales de operación 24/7 — Magdalena Medio, Colombia</p>
+      <div class="stats-grid" id="dashStats"></div>
+      <div class="card">
+        <div class="card-title">Estado de Módulos en Vivo</div>
+        <div id="modulesGrid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap:10px;"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Última Ejecución del Pipeline</div>
+        <div id="lastExecution" style="font-size:13px;"></div>
+      </div>
+    </section>
+
+    <!-- Users -->
+    <section class="section" id="sec-users">
+      <h1 class="h-title">Gestión de Usuarios</h1>
+      <p class="h-sub">Crear, editar, asignar planes, activos y permisos a operadores y empresas</p>
+      <div class="card">
+        <div class="card-title">
+          <span>Usuarios del Sistema</span>
+          <button class="btn" onclick="openCreateUser()" data-testid="users-create-btn">+ Crear Usuario</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table data-testid="users-table">
+            <thead><tr>
+              <th>Usuario</th><th>Empresa</th><th>Rol</th><th>Plan</th>
+              <th>Activos</th><th>Estado</th><th>Último login</th><th>Acciones</th>
+            </tr></thead>
+            <tbody id="usersTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Plans -->
+    <section class="section" id="sec-plans">
+      <h1 class="h-title">Planes Disponibles</h1>
+      <p class="h-sub">Definición de features y límites por plan. Asigna planes desde Usuarios → Editar.</p>
+      <div id="plansGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;"></div>
+    </section>
+
+    <!-- Tickets -->
+    <section class="section" id="sec-tickets">
+      <h1 class="h-title">Tickets de Intervención</h1>
+      <p class="h-sub">Auto-generados a partir de detecciones con score ≥ 60 (P1) o ≥ 80 (P0). Persisten en Supabase.</p>
+      <div id="ticketsAdminContent"></div>
+    </section>
+
+    <!-- Scheduler -->
+    <section class="section" id="sec-scheduler">
+      <h1 class="h-title">Scheduler Automático</h1>
+      <p class="h-sub">Pipeline Sentinel-5P · 4 ejecuciones diarias UTC alineadas con pasadas satelitales</p>
+      <div id="schedulerContent"></div>
+    </section>
+
+    <!-- Audit -->
+    <section class="section" id="sec-audit">
+      <h1 class="h-title">Auditoría — Cadena Hash Inmutable</h1>
+      <p class="h-sub">Cadena tipo blockchain de acciones administrativas (SHA-256 encadenado)</p>
+      <div class="stats-grid">
+        <div class="stat-card success">
+          <div class="stat-label">Bloques Totales</div>
+          <div class="stat-value" id="auditBlocks">…</div>
+        </div>
+        <div class="stat-card success">
+          <div class="stat-label">Integridad</div>
+          <div class="stat-value" id="auditIntegrity">…</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Último Hash</div>
+          <div class="stat-value" id="auditLastHash" style="font-size:11px;font-family:monospace;">…</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Eventos Recientes</div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>#</th><th>Timestamp</th><th>Acción</th><th>Actor</th><th>Target</th><th>Hash</th></tr></thead>
+            <tbody id="auditTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Health -->
+    <section class="section" id="sec-health">
+      <h1 class="h-title">Salud del Sistema</h1>
+      <p class="h-sub">WebSocket en vivo · Estado de módulos · Última ejecución</p>
+      <div class="card">
+        <div class="card-title">Stream WebSocket</div>
+        <pre class="code" id="wsLog" style="height:200px;overflow:auto;"></pre>
+      </div>
+      <div class="card">
+        <div class="card-title">Módulos Backend</div>
+        <pre class="code" id="healthDump"></pre>
+      </div>
+    </section>
+
+  </main>
+  </main>
+</div>
+
+<!-- Modals -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle">Modal</div>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn outline" onclick="closeModal()" data-testid="modal-cancel-btn">Cancelar</button>
+      <button class="btn" id="modalConfirm" data-testid="modal-confirm-btn">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script src="/admin.js"></script>
+</body>
+</html>

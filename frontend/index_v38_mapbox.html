@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MetanoSRGAN Elite v3.8 — Dashboard Satelital 24/7</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src='https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.css' rel='stylesheet' />
+  <style>
+    :root {
+      --bg:#0a0e1a;--card:#111827;--card2:#1a2235;--border:#1e3a5f;
+      --accent:#00d4ff;--green:#00ff88;--yellow:#ffd700;--orange:#ff8c00;
+      --red:#ff2244;--text:#e2e8f0;--muted:#64748b;--font:'Segoe UI',system-ui,sans-serif;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;}
+    .header{background:linear-gradient(135deg,#0d1b2e,#0a1628);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .logo{font-size:20px;font-weight:800;color:var(--accent);}
+    .logo span{color:var(--green);}
+    .vbadge{background:rgba(0,212,255,0.1);border:1px solid var(--accent);color:var(--accent);padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+    .hright{display:flex;align-items:center;gap:14px;}
+    .sdot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite;}
+    .sdot.red{background:var(--red);box-shadow:0 0 8px var(--red);}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+    .btn{background:linear-gradient(135deg,var(--accent),#0099cc);color:#000;border:none;padding:8px 18px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.2s;}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(0,212,255,0.4);}
+    .btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+    .tabs{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--card);padding:0 24px;}
+    .tab{padding:12px 20px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all 0.2s;}
+    .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .tab:hover{color:var(--text);}
+    .container{max-width:1500px;margin:0 auto;padding:20px 24px;}
+    .tc{display:none;}.tc.active{display:block;}
+    .sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px;}
+    .sc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;position:relative;overflow:hidden;}
+    .sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+    .sc.blue::before{background:var(--accent);}
+    .sc.green::before{background:var(--green);}
+    .sc.yellow::before{background:var(--yellow);}
+    .sc.red::before{background:var(--red);}
+    .sc.orange::before{background:var(--orange);}
+    .sl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+    .sv{font-size:26px;font-weight:800;line-height:1;}
+    .sv.blue{color:var(--accent);}
+    .sv.green{color:var(--green);}
+    .sv.yellow{color:var(--yellow);}
+    .sv.red{color:var(--red);}
+    .sv.orange{color:var(--orange);}
+    .ss{font-size:10px;color:var(--muted);margin-top:5px;}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px;}
+    .g3{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-bottom:20px;}
+    @media(max-width:900px){.g2,.g3{grid-template-columns:1fr;}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+    .ct{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+    .cdot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
+    #mapbox-map{height:460px;border-radius:10px;border:1px solid var(--border);}
+    .tw{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;font-size:12px;}
+    th{background:var(--card2);color:var(--muted);padding:10px 12px;text-align:left;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;font-size:10px;border-bottom:1px solid var(--border);}
+    td{padding:10px 12px;border-bottom:1px solid rgba(30,58,95,0.4);}
+    tr:hover td{background:rgba(0,212,255,0.03);}
+    .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;}
+    .b-elite{background:rgba(255,34,68,0.2);color:var(--red);border:1px solid var(--red);}
+    .b-crit{background:rgba(255,140,0,0.2);color:var(--orange);border:1px solid var(--orange);}
+    .b-vig{background:rgba(255,215,0,0.2);color:var(--yellow);border:1px solid var(--yellow);}
+    .b-mon{background:rgba(0,255,136,0.15);color:var(--green);border:1px solid var(--green);}
+    .logbox{background:#060a14;border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'Courier New',monospace;font-size:11px;height:180px;overflow-y:auto;color:#7dd3fc;}
+    .ll{margin-bottom:3px;}.ll.err{color:var(--red);}.ll.ok{color:var(--green);}.ll.warn{color:var(--yellow);}
+    .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(0,212,255,0.3);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;vertical-align:middle;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .mapboxgl-popup-content{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:12px;}
+    .mapboxgl-popup-tip{border-top-color:var(--card);}
+    .supabase-badge{display:inline-block;background:rgba(0,212,255,0.15);border:1px solid var(--accent);color:var(--accent);padding:4px 10px;border-radius:6px;font-size:10px;font-weight:600;margin-left:8px;}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="logo">Metano<span>SRGAN</span></div>
+    <div class="vbadge">v3.8 ELITE</div>
+    <span class="supabase-badge">Supabase ☁</span>
+    <span class="supabase-badge">Mapbox 🗺</span>
+    <div style="font-size:11px;color:var(--muted);">Magdalena Medio, Colombia</div>
+  </div>
+  <div class="hright">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="sdot" id="sdot"></div>
+      <span style="font-size:12px;color:var(--muted);" id="stxt">Conectando...</span>
+    </div>
+    <button class="btn btn-sm" id="runbtn" onclick="runPipeline()">▶ Ejecutar</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('dashboard')">Dashboard</div>
+  <div class="tab" onclick="switchTab('mapbox')">Mapa Satelital</div>
+  <div class="tab" onclick="switchTab('detections')">Detecciones (Supabase)</div>
+  <div class="tab" onclick="switchTab('tickets')">Tickets</div>
+</div>
+
+<div id="tab-dashboard" class="tc active">
+  <div class="container">
+    <div class="sgrid">
+      <div class="sc blue"><div class="sl">Activos Monitoreados</div><div class="sv blue" id="s-act">10</div><div class="ss">Ecopetrol / TGI</div></div>
+      <div class="sc green"><div class="sl">Detecciones (Supabase)</div><div class="sv green" id="s-cert">—</div><div class="ss">Sincronizadas</div></div>
+      <div class="sc red"><div class="sl">Alertas ÉLITE (≥80)</div><div class="sv red" id="s-elite">—</div><div class="ss">Score ≥ 80</div></div>
+      <div class="sc yellow"><div class="sl">Elite Score Máximo</div><div class="sv yellow" id="s-score">—</div><div class="ss">/ 120 puntos</div></div>
+      <div class="sc orange"><div class="sl">Pérdida Económica</div><div class="sv orange" id="s-loss">—</div><div class="ss">USD / día</div></div>
+      <div class="sc green"><div class="sl">Impacto CO₂e</div><div class="sv green" id="s-co2">—</div><div class="ss">Ton / año</div></div>
+    </div>
+    <div class="g3">
+      <div class="card">
+        <div class="ct"><div class="cdot"></div>CH4 por Activo (ppb) — Datos Reales</div>
+        <canvas id="chart-ch4" height="200"></canvas>
+      </div>
+      <div class="card">
+        <div class="ct"><div class="cdot"></div>Integración v3.8</div>
+        <div style="font-size:12px;line-height:2;color:var(--muted);">
+          <div>✓ Supabase (Persistencia)</div>
+          <div>✓ Mapbox (Satelital)</div>
+          <div>✓ Sentinel-5P (Real)</div>
+          <div>✓ Open-Meteo (Real)</div>
+          <div>✓ ML v3.7 (Real)</div>
+          <div>✓ JWT v3.6 (Real)</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct" style="justify-content:space-between;">
+        <span><div class="cdot" style="display:inline-block;margin-right:8px;"></div>Log del Sistema</span>
+        <button style="background:transparent;border:1px solid var(--accent);color:var(--accent);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;" onclick="document.getElementById('logbox').innerHTML=''">Limpiar</button>
+      </div>
+      <div class="logbox" id="logbox"></div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-mapbox" class="tc">
+  <div class="container">
+    <div class="card" style="margin-bottom:16px;">
+      <div class="ct" style="justify-content:space-between;">
+        <span><div class="cdot" style="display:inline-block;margin-right:8px;"></div>Mapa Satelital Mapbox — Magdalena Medio</span>
+        <button class="btn btn-sm" onclick="loadMapboxData()">Actualizar</button>
+      </div>
+      <div id="mapbox-map"></div>
+      <div style="margin-top:12px;display:flex;gap:16px;font-size:11px;flex-wrap:wrap;">
+        <span><span style="color:var(--red);">●</span> ÉLITE (≥80)</span>
+        <span><span style="color:var(--orange);">●</span> CRÍTICO (60-79)</span>
+        <span><span style="color:var(--yellow);">●</span> VIGILANCIA (40-59)</span>
+        <span><span style="color:var(--green);">●</span> MONITOREO (&lt;40)</span>
+        <span style="color:var(--muted);">Mapas satelitales de Mapbox con proyección de pluma</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-detections" class="tc">
+  <div class="container">
+    <div class="card">
+      <div class="ct" style="justify-content:space-between;">
+        <span><div class="cdot" style="display:inline-block;margin-right:8px;"></div>Detecciones desde Supabase</span>
+        <button class="btn btn-sm" onclick="loadDets()">Actualizar</button>
+      </div>
+      <div class="tw">
+        <table>
+          <thead><tr>
+            <th>Fecha</th><th>Activo</th><th>Operador</th>
+            <th>CH4 (ppb)</th><th>Anomalía</th><th>Elite Score</th>
+            <th>Categoría</th><th>Pérdida USD/día</th>
+          </tr></thead>
+          <tbody id="dets-body"></tbody>
+        </table>
+      </div>
+      <div id="dets-count" style="font-size:11px;color:var(--muted);margin-top:10px;"></div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-tickets" class="tc">
+  <div class="container">
+    <div class="card">
+      <div class="ct"><div class="cdot"></div>Tickets de Intervención (Supabase)</div>
+      <div id="tick-list" style="font-size:13px;color:var(--muted);">Cargando...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = window.location.origin;
+let mapboxMap = null;
+let allDets = [];
+let chartCH4 = null;
+let mapboxToken = 'pk.MAPBOX_TOKEN.K953eEZ9hyIpK0NvJzzpZA';
+
+function log(msg, type='') {
+  const b = document.getElementById('logbox');
+  const d = document.createElement('div');
+  d.className = 'll '+type;
+  d.textContent = '['+new Date().toLocaleTimeString('es-CO')+'] '+msg;
+  b.appendChild(d);
+  b.scrollTop = b.scrollHeight;
+}
+
+function switchTab(n) {
+  const names = ['dashboard','mapbox','detections','tickets'];
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',names[i]===n));
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.add('active');
+  if(n==='mapbox'&&!mapboxMap) initMapbox();
+  if(n==='mapbox') loadMapboxData();
+  if(n==='detections') loadDets();
+  if(n==='tickets') loadTicks();
+}
+
+async function initDash() {
+  log('MetanoSRGAN Elite v3.8 iniciado','ok');
+  log('Conectando con API, Supabase y Mapbox...');
+  await loadStatus();
+  await loadCH4Chart();
+  setInterval(loadStatus, 30000);
+}
+
+async function loadStatus() {
+  try {
+    const d = await fetch(API+'/api/status').then(r=>r.json());
+    const dot = document.getElementById('sdot');
+    const txt = document.getElementById('stxt');
+    dot.className = d.system_status==='OPERATIONAL_24_7' ? 'sdot' : 'sdot red';
+    txt.textContent = d.system_status==='OPERATIONAL_24_7' ? 'OPERATIVO 24/7' : d.system_status;
+    const r = d.last_results||{};
+    document.getElementById('s-cert').textContent = r.total_alertas??'—';
+    document.getElementById('s-elite').textContent = r.alertas_criticas_elite_score_80??'—';
+    document.getElementById('s-score').textContent = r.elite_score_maximo!=null ? r.elite_score_maximo.toFixed(1) : '—';
+    document.getElementById('s-loss').textContent = r.perdida_total_usd_dia!=null ? '$'+r.perdida_total_usd_dia.toFixed(2) : '—';
+    document.getElementById('s-co2').textContent = r.impacto_co2e_anual_ton!=null ? r.impacto_co2e_anual_ton.toFixed(1)+' T' : '—';
+  } catch(e) { log('Error estado: '+e.message,'err'); }
+}
+
+async function loadCH4Chart() {
+  try {
+    const d = await fetch(API+'/api/detections/map').then(r=>r.json());
+    const f = d.features||[];
+    if(!f.length) return;
+    const ctx = document.getElementById('chart-ch4').getContext('2d');
+    if(chartCH4) chartCH4.destroy();
+    chartCH4 = new Chart(ctx, {
+      type:'bar',
+      data:{
+        labels: f.map(x=>x.activo),
+        datasets:[
+          {label:'CH4 Total (ppb)',data:f.map(x=>x.ch4_ppb),backgroundColor:f.map(x=>x.color+'33'),borderColor:f.map(x=>x.color),borderWidth:2},
+          {label:'Anomalía (ppb)',data:f.map(x=>x.anomaly_ppb),backgroundColor:'rgba(255,215,0,0.3)',borderColor:'#ffd700',borderWidth:2,type:'line',yAxisID:'y2'}
+        ]
+      },
+      options:{
+        responsive:true,
+        plugins:{legend:{labels:{color:'#e2e8f0',font:{size:11}}}},
+        scales:{
+          x:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'#1e3a5f33'}},
+          y:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'#1e3a5f33'},title:{display:true,text:'CH4 (ppb)',color:'#64748b',font:{size:10}}},
+          y2:{position:'right',ticks:{color:'#ffd700',font:{size:10}},grid:{display:false},title:{display:true,text:'Anomalía (ppb)',color:'#ffd700',font:{size:10}}}
+        }
+      }
+    });
+    log('Gráfica CH4 actualizada: '+f.length+' activos');
+  } catch(e) { log('Error gráfica: '+e.message,'err'); }
+}
+
+async function runPipeline() {
+  const btn = document.getElementById('runbtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Ejecutando...';
+  log('Iniciando pipeline v3.7 con datos reales...','warn');
+  try {
+    const d = await fetch(API+'/api/pipeline/run',{method:'POST',body:JSON.stringify({force:true}),headers:{'Content-Type':'application/json'}}).then(r=>r.json());
+    log('Pipeline iniciado para: '+d.date,'ok');
+    setTimeout(async()=>{
+      await loadStatus();
+      await loadCH4Chart();
+      btn.disabled=false;
+      btn.textContent='▶ Ejecutar';
+      log('Pipeline completado. Datos actualizados.','ok');
+    }, 22000);
+  } catch(e) {
+    log('Error pipeline: '+e.message,'err');
+    btn.disabled=false;
+    btn.textContent='▶ Ejecutar';
+  }
+}
+
+function initMapbox() {
+  mapboxgl.accessToken = mapboxToken;
+  mapboxMap = new mapboxgl.Map({
+    container: 'mapbox-map',
+    style: 'mapbox://styles/mapbox/satellite-v9',
+    center: [-73.8, 6.5],
+    zoom: 8
+  });
+  log('Mapa Mapbox Satelital inicializado','ok');
+}
+
+async function loadMapboxData() {
+  if(!mapboxMap) initMapbox();
+  try {
+    const d = await fetch(API+'/api/detections/map').then(r=>r.json());
+    const f = d.features||[];
+    
+    // Limpiar marcadores anteriores
+    document.querySelectorAll('.mapboxgl-marker').forEach(m=>m.remove());
+    
+    f.forEach(ft=>{
+      if(!ft.lat||!ft.lon) return;
+      const el = document.createElement('div');
+      el.style.width = (12 + ft.elite_score/8)+'px';
+      el.style.height = (12 + ft.elite_score/8)+'px';
+      el.style.background = ft.color;
+      el.style.borderRadius = '50%';
+      el.style.border = '2px solid '+ft.color;
+      el.style.boxShadow = '0 0 8px '+ft.color;
+      
+      const popup = new mapboxgl.Popup({offset: 25}).setHTML(`
+        <div style="min-width:200px;">
+          <div style="font-weight:700;font-size:13px;color:${ft.color};margin-bottom:6px;">${ft.activo}</div>
+          <div style="font-size:11px;line-height:1.8;">
+            <div><b>Operador:</b> ${ft.operador}</div>
+            <div><b>CH4:</b> ${ft.ch4_ppb.toFixed(1)} ppb</div>
+            <div><b>Anomalía:</b> +${ft.anomaly_ppb.toFixed(1)} ppb</div>
+            <div><b>Elite Score:</b> ${ft.elite_score.toFixed(1)} / 120</div>
+            <div><b>Nivel:</b> <span style="color:${ft.color};">${ft.nivel}</span></div>
+          </div>
+        </div>
+      `);
+      
+      new mapboxgl.Marker({element: el}).setLngLat([ft.lon, ft.lat]).setPopup(popup).addTo(mapboxMap);
+    });
+    
+    log('Mapa Mapbox actualizado: '+f.length+' activos','ok');
+  } catch(e) { log('Error mapa: '+e.message,'err'); }
+}
+
+async function loadDets() {
+  try {
+    const d = await fetch(API+'/api/detections?limit=100').then(r=>r.json());
+    allDets = d.detections||[];
+    document.getElementById('dets-body').innerHTML = allDets.map(e=>{
+      const sc=e.score_prioridad||e.elite_score||0;
+      const cat=e.categoria_alerta||'';
+      const bc=sc>=80?'b-elite':sc>=60?'b-crit':sc>=40?'b-vig':'b-mon';
+      return `<tr>
+        <td style="color:var(--muted);">${(e.fecha_deteccion||'').slice(0,10)}</td>
+        <td style="font-weight:600;">${e.activo_cercano||'—'}</td>
+        <td style="color:var(--muted);">${e.operador||'—'}</td>
+        <td style="color:var(--accent);">${(e.intensidad_ppb||e.ch4_ppb_total||0).toFixed(1)}</td>
+        <td style="color:var(--yellow);">+${(e.ch4_ppb_anomaly||0).toFixed(1)}</td>
+        <td style="color:${sc>=80?'var(--red)':sc>=60?'var(--orange)':'var(--green)'};">${sc.toFixed(1)}</td>
+        <td><span class="badge ${bc}">${cat}</span></td>
+        <td style="color:var(--orange);">$${(e.perdida_economica_usd_dia||0).toFixed(3)}</td>
+      </tr>`;
+    }).join('');
+    document.getElementById('dets-count').textContent='Total: '+d.total+' | Mostrando: '+allDets.length;
+    log('Detecciones cargadas: '+allDets.length,'ok');
+  } catch(e) { log('Error detecciones: '+e.message,'err'); }
+}
+
+async function loadTicks() {
+  try {
+    const d = await fetch(API+'/api/tickets').then(r=>r.json());
+    const t = d.tickets||[];
+    document.getElementById('tick-list').innerHTML=t.length?t.map(tk=>
+      `<div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:10px;">
+        <div style="font-weight:700;color:var(--red);">Ticket #${tk.ticket_id||tk.id||'—'}</div>
+        <div style="font-size:11px;margin-top:6px;color:var(--muted);">
+          Activo: ${tk.activo||'—'} | Score: ${tk.elite_score||'—'} | Fecha: ${(tk.fecha||'').slice(0,10)}
+        </div>
+      </div>`).join(''):'<div>No hay tickets. Se generan automáticamente cuando Elite Score ≥ 80.</div>';
+    log('Tickets: '+t.length,'ok');
+  } catch(e) { log('Error tickets: '+e.message,'err'); }
+}
+
+window.addEventListener('load', initDash);
+</script>
+</body>
+</html>

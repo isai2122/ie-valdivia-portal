@@ -1,0 +1,36 @@
+{
+  "ticket_id": "TKT-20260508-130659-VASCONIA",
+  "estado": "ABIERTO",
+  "fuente": "AUTO_PIPELINE_V55",
+  "categoria": "CRITICO",
+  "prioridad": "P1",
+  "color": "#ff8c00",
+  "accion_recomendada": "VERIFICAR_EN_CAMPO",
+  "escalar_a": "JEFE_HSE",
+  "creado_en": "2026-05-08T13:06:59.647179+00:00",
+  "sla_deadline": "2026-05-09T13:06:59.647179+00:00",
+  "sla_horas": 24,
+  "activo": "Vasconia",
+  "operador": "Cenit",
+  "tipo_activo": "Estación de Bombeo",
+  "latitud": 5.918,
+  "longitud": -74.475,
+  "fecha_deteccion": "2026-04-21T11:45:23.168109+00:00",
+  "ch4_ppb": 2227.35355183024,
+  "ch4_anomaly_ppb": 307.35,
+  "score": 62.7,
+  "perdida_usd_dia": 3.718,
+  "viento_velocidad": 0,
+  "viento_direccion": 0,
+  "asignado_a": null,
+  "notas": [],
+  "historial": [
+    {
+      "ts": "2026-05-08T13:06:59.647179+00:00",
+      "evento": "TICKET_CREADO_AUTOMATICAMENTE",
+      "actor": "system",
+      "detalle": "Auto-generado por pipeline. Score=62.7 (CRITICO)"
+    }
+  ],
+  "fuente_datos": "Copernicus Sentinel-5P TROPOMI + Open-Meteo CAMS"
+}

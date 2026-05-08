@@ -1,0 +1,14 @@
+{
+  "version": "5.5",
+  "system_status": "OPERATIONAL_24_7",
+  "last_execution": "2026-05-08T14:15:07.576779+00:00",
+  "next_check": "2026-05-08T17:15:07.576785+00:00",
+  "data_source": "Copernicus Sentinel-5P REAL + Open-Meteo",
+  "last_results": {
+    "total_alertas": 8,
+    "alertas_criticas_elite_score_80": 1,
+    "elite_score_maximo": 82.5,
+    "perdida_total_usd_dia": 1.19,
+    "impacto_co2e_anual_ton": 60.82
+  }
+}

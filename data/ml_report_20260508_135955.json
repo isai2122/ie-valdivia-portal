@@ -1,0 +1,154 @@
+{
+  "version": "3.7",
+  "timestamp": "2026-05-08T13:59:55.244675+00:00",
+  "modelo": {
+    "status": "trained",
+    "n_events": 472,
+    "n_reincidencias": 7,
+    "cv_f1_scores": [
+      0.9877,
+      1.0,
+      1.0,
+      1.0,
+      0.6457
+    ],
+    "cv_f1_mean": 0.9267,
+    "feature_importances": {
+      "anomaly_ppb": 0.0371,
+      "wind_speed": 0.0127,
+      "wind_sin": 0.0094,
+      "wind_cos": 0.195,
+      "persistencia_dias": 0.137,
+      "hora": 0.0106,
+      "mes": 0.0528,
+      "elite_score": 0.3144,
+      "flujo_kgh": 0.1803,
+      "perdida_usd": 0.0507
+    },
+    "n_clusters": 4,
+    "method": "sklearn_randomforest"
+  },
+  "resumen": {
+    "total_activos_analizados": 8,
+    "activos_riesgo_alto": 0,
+    "activos_riesgo_medio": 1,
+    "activos_riesgo_bajo": 7,
+    "activo_mas_critico": "Barrancabermeja",
+    "prob_reincidencia_maxima": 0.6242
+  },
+  "predicciones_por_activo": [
+    {
+      "activo": "Barrancabermeja",
+      "prob_reincidencia": 0.6242,
+      "elite_score_futuro_estimado": 42.4,
+      "cluster_comportamiento": 1,
+      "nivel_riesgo": "MEDIO",
+      "color_riesgo": "orange",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 2132.68,
+      "elite_score_actual": 82.3,
+      "categoria_actual": "ÉLITE ALTO"
+    },
+    {
+      "activo": "Mariquita",
+      "prob_reincidencia": 0.02,
+      "elite_score_futuro_estimado": 46.4,
+      "cluster_comportamiento": 1,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 2001.4,
+      "elite_score_actual": 69.5,
+      "categoria_actual": "ALERTA PREVENTIVA"
+    },
+    {
+      "activo": "Galán",
+      "prob_reincidencia": 0.0,
+      "elite_score_futuro_estimado": 52.9,
+      "cluster_comportamiento": 3,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 2540.5,
+      "elite_score_actual": 79.7,
+      "categoria_actual": "ALERTA PREVENTIVA"
+    },
+    {
+      "activo": "Miraflores",
+      "prob_reincidencia": 0.0,
+      "elite_score_futuro_estimado": 43.7,
+      "cluster_comportamiento": 1,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 1965.08,
+      "elite_score_actual": 65.2,
+      "categoria_actual": "ALERTA PREVENTIVA"
+    },
+    {
+      "activo": "Payoa",
+      "prob_reincidencia": 0.0,
+      "elite_score_futuro_estimado": 34.7,
+      "cluster_comportamiento": 1,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 2121.51,
+      "elite_score_actual": 50.5,
+      "categoria_actual": "VIGILANCIA"
+    },
+    {
+      "activo": "Norean",
+      "prob_reincidencia": 0.0,
+      "elite_score_futuro_estimado": 30.3,
+      "cluster_comportamiento": 1,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 2043.3,
+      "elite_score_actual": 43.0,
+      "categoria_actual": "VIGILANCIA"
+    },
+    {
+      "activo": "Puerto Boyacá",
+      "prob_reincidencia": 0.0,
+      "elite_score_futuro_estimado": 25.1,
+      "cluster_comportamiento": 1,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 1962.29,
+      "elite_score_actual": 35.4,
+      "categoria_actual": "MONITOREO RUTINARIO"
+    },
+    {
+      "activo": "La Dorada",
+      "prob_reincidencia": 0.0,
+      "elite_score_futuro_estimado": 22.9,
+      "cluster_comportamiento": 2,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 1970.67,
+      "elite_score_actual": 33.8,
+      "categoria_actual": "MONITOREO RUTINARIO"
+    }
+  ],
+  "recomendaciones": [
+    {
+      "activo": "Barrancabermeja",
+      "prioridad": 2,
+      "accion": "MONITOREO INTENSIVO",
+      "descripcion": "Probabilidad de reincidencia 62.4%. Aumentar frecuencia de monitoreo a cada 1 hora. Preparar equipo de campo para posible intervención.",
+      "urgencia_horas": 72
+    }
+  ]
+}

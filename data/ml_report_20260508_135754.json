@@ -1,0 +1,146 @@
+{
+  "version": "3.7",
+  "timestamp": "2026-05-08T13:57:54.340038+00:00",
+  "modelo": {
+    "status": "trained",
+    "n_events": 464,
+    "n_reincidencias": 6,
+    "cv_f1_scores": [
+      1.0,
+      0.9839,
+      1.0,
+      1.0,
+      0.6929
+    ],
+    "cv_f1_mean": 0.9354,
+    "feature_importances": {
+      "anomaly_ppb": 0.0161,
+      "wind_speed": 0.0229,
+      "wind_sin": 0.01,
+      "wind_cos": 0.1988,
+      "persistencia_dias": 0.1222,
+      "hora": 0.0106,
+      "mes": 0.054,
+      "elite_score": 0.2871,
+      "flujo_kgh": 0.2203,
+      "perdida_usd": 0.058
+    },
+    "n_clusters": 4,
+    "method": "sklearn_randomforest"
+  },
+  "resumen": {
+    "total_activos_analizados": 8,
+    "activos_riesgo_alto": 0,
+    "activos_riesgo_medio": 0,
+    "activos_riesgo_bajo": 8,
+    "activo_mas_critico": "Barrancabermeja",
+    "prob_reincidencia_maxima": 0.09
+  },
+  "predicciones_por_activo": [
+    {
+      "activo": "Barrancabermeja",
+      "prob_reincidencia": 0.09,
+      "elite_score_futuro_estimado": 2.7,
+      "cluster_comportamiento": 1,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 2132.68,
+      "elite_score_actual": 82.3,
+      "categoria_actual": "ÉLITE ALTO"
+    },
+    {
+      "activo": "Galán",
+      "prob_reincidencia": 0.02,
+      "elite_score_futuro_estimado": 40.2,
+      "cluster_comportamiento": 2,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 2540.5,
+      "elite_score_actual": 79.7,
+      "categoria_actual": "ALERTA PREVENTIVA"
+    },
+    {
+      "activo": "Mariquita",
+      "prob_reincidencia": 0.02,
+      "elite_score_futuro_estimado": 34.2,
+      "cluster_comportamiento": 1,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 2001.4,
+      "elite_score_actual": 69.5,
+      "categoria_actual": "ALERTA PREVENTIVA"
+    },
+    {
+      "activo": "Payoa",
+      "prob_reincidencia": 0.02,
+      "elite_score_futuro_estimado": 27.0,
+      "cluster_comportamiento": 2,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 2121.51,
+      "elite_score_actual": 50.5,
+      "categoria_actual": "VIGILANCIA"
+    },
+    {
+      "activo": "Miraflores",
+      "prob_reincidencia": 0.0,
+      "elite_score_futuro_estimado": 33.0,
+      "cluster_comportamiento": 1,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 1965.08,
+      "elite_score_actual": 65.2,
+      "categoria_actual": "ALERTA PREVENTIVA"
+    },
+    {
+      "activo": "Norean",
+      "prob_reincidencia": 0.0,
+      "elite_score_futuro_estimado": 22.0,
+      "cluster_comportamiento": 2,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 2043.3,
+      "elite_score_actual": 43.0,
+      "categoria_actual": "VIGILANCIA"
+    },
+    {
+      "activo": "Puerto Boyacá",
+      "prob_reincidencia": 0.0,
+      "elite_score_futuro_estimado": 18.1,
+      "cluster_comportamiento": 2,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 1962.29,
+      "elite_score_actual": 35.4,
+      "categoria_actual": "MONITOREO RUTINARIO"
+    },
+    {
+      "activo": "La Dorada",
+      "prob_reincidencia": 0.0,
+      "elite_score_futuro_estimado": 15.4,
+      "cluster_comportamiento": 3,
+      "nivel_riesgo": "BAJO",
+      "color_riesgo": "green",
+      "metodo": "sklearn_ml",
+      "ventana_prediccion_dias": 7,
+      "ch4_ppb_actual": 1970.67,
+      "elite_score_actual": 33.8,
+      "categoria_actual": "MONITOREO RUTINARIO"
+    }
+  ],
+  "recomendaciones": []
+}

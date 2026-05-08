@@ -1,0 +1,89 @@
+{
+  "admin": {
+    "username": "admin",
+    "password_hash": "9aa62001dba355789f5e7586b2c63117c6309a4aa84fa30c3adc40d045b83d5a",
+    "role": "admin",
+    "full_name": "Administrador del Sistema",
+    "email": "admin@metanosrgan.co",
+    "created_at": "2026-05-08T02:37:33.870191+00:00",
+    "last_login": null,
+    "active": true
+  },
+  "ortizisacc18": {
+    "username": "ortizisacc18",
+    "password_hash": "0378a629a9f06b7c60ad48b952d8e72748678a29d947c994eda6a2eca1748201",
+    "role": "admin",
+    "full_name": "Administrador Principal",
+    "email": "ortizisacc18@gmail.com",
+    "created_at": "2026-05-08T02:37:33.870771+00:00",
+    "last_login": "2026-05-08T21:30:32.684334+00:00",
+    "active": true
+  },
+  "TEST_user_1778208986": {
+    "username": "TEST_user_1778208986",
+    "password_hash": "$2b$12$gItrA13sXZP5T2s/hIXJde/lHGKD9yHs5m.MjWUY1MwEn7DxkanyW",
+    "role": "viewer",
+    "full_name": "Updated User",
+    "email": "TEST_user_1778208986@test.com",
+    "created_at": "2026-05-08T02:56:26.469989+00:00",
+    "last_login": null,
+    "active": false,
+    "password_reset_at": "2026-05-08T02:56:26.793514+00:00",
+    "deleted_at": "2026-05-08T02:56:26.896093+00:00"
+  },
+  "TEST_user_1778209124": {
+    "username": "TEST_user_1778209124",
+    "password_hash": "$2b$12$hq1Mag.A7H9ATGZIIy3r5uta.rC6Bqe4B0nmILXXxKXPcf0tW5uDq",
+    "role": "viewer",
+    "full_name": "Updated User",
+    "email": "TEST_user_1778209124@test.com",
+    "created_at": "2026-05-08T02:58:44.472535+00:00",
+    "last_login": null,
+    "active": false,
+    "password_reset_at": "2026-05-08T02:58:44.800516+00:00",
+    "deleted_at": "2026-05-08T02:58:44.893104+00:00"
+  },
+  "ecopetrol_jr": {
+    "username": "ecopetrol_jr",
+    "password_hash": "029971741e910f75c496e7fe8226dbcd24c3a27db9d33473c9aee03f521291ee",
+    "role": "viewer",
+    "full_name": "Juan Rodr\u00edguez",
+    "email": "jr@ecopetrol.com",
+    "created_at": "2026-05-08T11:37:34.249851+00:00",
+    "last_login": "2026-05-08T11:53:32.879415+00:00",
+    "active": true,
+    "plan": "regional",
+    "empresa": "Ecopetrol",
+    "plan_asignado_por": "ortizisacc18",
+    "plan_asignado_en": "2026-05-08T11:37:34.250148+00:00"
+  },
+  "ecopetrol_enterprise": {
+    "username": "ecopetrol_enterprise",
+    "password_hash": "049398b7a7ef14b0ee4b1b66b44cc73a5f7544bc2ccb925dcb75004c410a308e",
+    "role": "viewer",
+    "full_name": "Carlos Manager",
+    "email": "enterprise@ecopetrol.com",
+    "created_at": "2026-05-08T11:37:34.261800+00:00",
+    "last_login": "2026-05-08T21:38:30.411748+00:00",
+    "active": true,
+    "plan": "enterprise",
+    "empresa": "Ecopetrol",
+    "plan_asignado_por": "ortizisacc18",
+    "plan_asignado_en": "2026-05-08T11:37:34.262096+00:00"
+  },
+  "TEST_ent_1778241035": {
+    "username": "TEST_ent_1778241035",
+    "password_hash": "50dd06f1609ccf83085fdc6d535d63ac8adc332f36a94569337ad4ff9ca5551e",
+    "role": "viewer",
+    "full_name": "Tmp",
+    "email": "TEST_ent_1778241035@test.com",
+    "created_at": "2026-05-08T11:50:35.651608+00:00",
+    "last_login": null,
+    "active": false,
+    "plan": "enterprise",
+    "empresa": "TestCo",
+    "plan_asignado_por": "ortizisacc18",
+    "plan_asignado_en": "2026-05-08T11:50:35.652764+00:00",
+    "deleted_at": "2026-05-08T11:50:35.967030+00:00"
+  }
+}

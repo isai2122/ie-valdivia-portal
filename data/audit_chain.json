@@ -1,0 +1,62 @@
+[
+  {
+    "index": 0,
+    "timestamp": "2026-05-08T02:56:29.183979+00:00",
+    "action": "API_KEY_CREATE",
+    "actor": "ortizisacc18",
+    "target": "TEST_key",
+    "details": "{\"scopes\": [\"read:detections\"]}",
+    "prev_hash": "GENESIS",
+    "hash": "7b580e039b03c1001956ae0de823b9d06c76052a3ab14983562ced27d76ad562"
+  },
+  {
+    "index": 1,
+    "timestamp": "2026-05-08T02:56:29.325083+00:00",
+    "action": "WEBHOOK_REGISTER",
+    "actor": "ortizisacc18",
+    "target": "https://example.com/hook",
+    "details": "{\"events\": [\"detection.created\"]}",
+    "prev_hash": "7b580e039b03c1001956ae0de823b9d06c76052a3ab14983562ced27d76ad562",
+    "hash": "dde3923d85b45c6df6e85a8336fb2f5b0f9ffb0729b9b3dcfc3c7f17dcb4af5f"
+  },
+  {
+    "index": 2,
+    "timestamp": "2026-05-08T02:56:29.371173+00:00",
+    "action": "WEBHOOK_DELETE",
+    "actor": "ortizisacc18",
+    "target": "04680cac",
+    "details": "",
+    "prev_hash": "dde3923d85b45c6df6e85a8336fb2f5b0f9ffb0729b9b3dcfc3c7f17dcb4af5f",
+    "hash": "71b2d57dfb5f197c94487f47053bace72735f49341002672b3f501143bf35f0d"
+  },
+  {
+    "index": 3,
+    "timestamp": "2026-05-08T02:58:46.402526+00:00",
+    "action": "API_KEY_CREATE",
+    "actor": "ortizisacc18",
+    "target": "TEST_key",
+    "details": "{\"scopes\": [\"read:detections\"]}",
+    "prev_hash": "71b2d57dfb5f197c94487f47053bace72735f49341002672b3f501143bf35f0d",
+    "hash": "153648fcf13419851901a9f9c96c64e0aeeec6505eec990abc8a8d0f64265c88"
+  },
+  {
+    "index": 4,
+    "timestamp": "2026-05-08T02:58:46.550228+00:00",
+    "action": "WEBHOOK_REGISTER",
+    "actor": "ortizisacc18",
+    "target": "https://example.com/hook",
+    "details": "{\"events\": [\"detection.created\"]}",
+    "prev_hash": "153648fcf13419851901a9f9c96c64e0aeeec6505eec990abc8a8d0f64265c88",
+    "hash": "ffd276b58aba02189446f3b79254a63f775d0131feed5b2c16666f9fec895cde"
+  },
+  {
+    "index": 5,
+    "timestamp": "2026-05-08T02:58:46.596220+00:00",
+    "action": "WEBHOOK_DELETE",
+    "actor": "ortizisacc18",
+    "target": "87ba975f",
+    "details": "",
+    "prev_hash": "ffd276b58aba02189446f3b79254a63f775d0131feed5b2c16666f9fec895cde",
+    "hash": "64a097e6b28ded32e50d1268519c11e3bea2a7737c390b9a85e5cf5d4fae8049"
+  }
+]

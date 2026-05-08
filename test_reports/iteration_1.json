@@ -1,0 +1,44 @@
+{
+  "summary": "First testing iteration of MetanoSRGAN Elite v5.5. Comprehensive backend regression suite (36 tests) and full frontend smoke test executed against the public preview URL. 35/36 backend tests pass (97%). Frontend works end-to-end: login with email, JWT redirect to /admin, real Supabase data (3 users, 409 detections, 5 modules ACTIVO, $1,317.41/day), all 10 admin nav tabs clickable with no JS errors, auth guard correctly redirects /admin → /login when no token, and the public dashboard at / is intact with charts, KPIs and the Admin v5.5 button. Only one real backend bug: GET /api/ml/predictions returns 500 due to numpy.radians failing on non-numeric wind_deg.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "/api/ml/predictions",
+        "issue": "Returns 500 — TypeError: ufunc 'radians' not supported for the input types in ml_persistence_v37.py:139 (np.radians(wind_deg)). wind_deg from Supabase events contains None/string values. Needs casting/None-guard before np.radians.",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Fix /api/ml/predictions 500 in /app/backend/ml_persistence_v37.py:139 — coerce wind_deg to float (with default 0.0) before calling np.radians, e.g.: `wind_deg = float(event.get('wind_deg') or 0.0)` inside _extract_features. Same defensive cast may be needed for other numeric fields (wind_speed, ch4_ppb)."
+  ],
+  "critical_code_review_comments": [
+    "ml_persistence_v37._extract_features does not validate that numeric inputs are actually numbers, leading to runtime crashes when Supabase returns None/strings. Add type-coercion at the boundary or use pydantic to validate event rows.",
+    "/app/backend/server.py is large; consider splitting v5.5 routers (carbon, compliance, exports, keys, webhooks, audit, analytics) into a separate APIRouter module for maintainability.",
+    "Frontend /app/frontend/.env is missing — REACT_APP_BACKEND_URL is not defined; frontend uses relative /api paths via static-server.js proxy which works in preview but should be verified for the Render deploy.",
+    "Login form testid is `login-submit-btn` (not `-button`) — minor naming inconsistency; consider standardising on `-button` suffix for clarity."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py"
+  ],
+  "success_rate": {
+    "backend": "97% (35/36)",
+    "frontend": "100% (login, redirect, dashboard, all 10 tabs, auth guard, public dashboard)"
+  },
+  "test_credentials": "ortizisacc18@gmail.com / 212228IsaiJosias@ (works); username form ortizisacc18 also works",
+  "seed_data_creation": "Tests create transient TEST_user_<ts> via /api/admin/users which is then updated/reset/toggled/deleted within the same test (full lifecycle). No leftover data.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend suite at /app/backend/tests/backend_test.py covers: auth (email+username), health (5.5.0+supabase), v55/info (9 capabilities including 'comparativas_historicas' instead of 'analytics'), admin protection (401/403 without JWT), admin CRUD full lifecycle (create→update→reset-password→toggle→delete), carbon credits (IPCC AR6 GWP 29.8, Verra, Gold Standard, EU ETS), compliance (5 normativas: epa_ooooa_b, eu_mrr, co_rua_pi, ogmp_2_0_gold, wb_gmfr), exports (CSV/Excel/PDF with content-type checks), API keys lifecycle, webhooks lifecycle, audit chain (verificacion.integro=true), analytics by-period & by-asset, WebSocket /api/ws/live heartbeat, and 10 v5.4 endpoints. Run with: `python -m pytest /app/backend/tests/backend_test.py -v`. After the ml fix, re-run only the failing test: `python -m pytest /app/backend/tests/backend_test.py::TestV54Endpoints::test_v54_endpoint -v`. Frontend testids: nav-{dashboard,users,audit,compliance,carbon,analytics,apikeys,webhooks,exports,health}, login-{username-input,password-input,submit-btn,error,success,form}.",
+  "rca_of_the_issue": "RCA for /api/ml/predictions 500: In /app/backend/ml_persistence_v37.py line 139 `_extract_features` calls `np.radians(wind_deg)` where wind_deg comes directly from a Supabase event dict (`event.get('wind_deg')`). When Supabase returns events with NULL or string-typed wind_deg, numpy.radians can't coerce safely and raises TypeError. This propagates up through `_build_dataset` → `train` → `generate_ml_report` → endpoint. Reproduction: `curl https://wingman-29b255c3-66da-47d4-b4ef-fc21ee142b5a.preview.emergentagent.com/api/ml/predictions` → 500. Mitigation: coerce numeric features at the boundary, e.g. `wind_deg = float(event.get('wind_deg') or 0.0)` and similarly for other numeric fields, OR filter events with `if event.get('wind_deg') is None: continue` inside _build_dataset."
+}

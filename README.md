@@ -1,93 +1,64 @@
-# IE Valdivia - Portal Educativo
+# MetanoSRGAN Elite v5.5 — Mata-Gigantes Edition
 
-Full-stack school portal: React frontend + FastAPI backend + MongoDB Atlas. Single URL deployment on Render.
+> Sistema de Detección de Metano por Satélite con IA — 24/7 — Magdalena Medio, Colombia
 
-## Stack
-- Frontend: React 19 + React Router + Tailwind CSS + lucide-react
-- Backend: FastAPI + Motor (async MongoDB driver)
-- Database: MongoDB Atlas (cloud)
-- Hosting: Render (single Web Service serves both frontend build and `/api/*`)
+[![Render](https://img.shields.io/badge/Deploy-Render-46e3b7)](https://render.com)
+[![Sentinel-5P](https://img.shields.io/badge/Data-Sentinel--5P-0070d6)](https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-5p)
+[![Supabase](https://img.shields.io/badge/DB-Supabase-3ecf8e)](https://supabase.com)
+[![Mapbox](https://img.shields.io/badge/Map-Mapbox%20GL-000)](https://www.mapbox.com)
 
-## Features
-- Public pages: Inicio, Noticias, Proyectos, Videos, Sobre Nosotros, Perfil
-- Admin login (user `admin`, default password `12`) with floating side panel for editing:
-  logo, banners (image or video), news, projects, videos, about us, social links, site config, **change admin password**
-- Banners support YouTube/Vimeo/.mp4 videos with autoplay/mute/loop
-- Videos page with grid + modal player (YouTube embed or direct video)
-- Site auto-refreshes every 15s so admin changes propagate to all visitors
-- Search across news, projects, videos
+## ⚡ Lo nuevo en v5.5
 
-## Deployment to Render (recommended path for IA Manus)
+| 🆕 | Descripción |
+|----|-------------|
+| 🛡 **Panel Admin Completo** | CRUD usuarios, roles, asignación de activos, audit log inmutable |
+| 🌱 **Créditos de Carbono** | Verra VM0033 + Gold Standard + EU ETS (IPCC AR6 GWP=29.8) |
+| 📋 **Compliance** | EPA OOOOa/b · EU MRR · RUA-PI Colombia · OGMP 2.0 · WB GMFR |
+| 📤 **Exportadores** | PDF ejecutivo · Excel multihoja · CSV |
+| 🔑 **API Keys públicas** | Sistema con scopes y rate-limit para integradores |
+| 🔔 **Webhooks salientes** | SCADA · Slack · MS Teams · ERP — con HMAC-SHA256 |
+| ⛓ **Audit Chain** | SHA-256 encadenado tipo blockchain para inmutabilidad |
+| 📊 **Analytics** | Comparativas día/semana/mes/año + ranking de activos |
+| 🔴 **WebSocket Live** | Heartbeat cada 5 s al panel admin |
+| 📧 **Login por email** | `ortizisacc18@gmail.com` o usuario plano |
 
-### Prerequisites
-1. **MongoDB Atlas** account with a free cluster (M0). Make sure:
-   - You created a database user with username + password
-   - Network Access has `0.0.0.0/0` allowed (so Render can connect)
-   - You copied the connection string in the form:
-     ```
-     mongodb+srv://USER:PASSWORD@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority
-     ```
-2. A **GitHub repository** containing this project (push the whole `/app` content to a repo).
+## 🚀 Despliegue
 
-### Steps Manus IA must follow
-1. Open https://dashboard.render.com and sign in / create an account.
-2. Click **New +** → **Blueprint**.
-3. Connect the GitHub repository where this project was pushed.
-4. Render will detect `render.yaml` automatically. Confirm the service `ie-valdivia-portal`.
-5. Before the first deploy, set the secret env var:
-   - `MONGO_URL` = the MongoDB Atlas connection string from the prerequisites.
-   (Other env vars `DB_NAME`, `ADMIN_PASSWORD`, `PYTHON_VERSION`, `NODE_VERSION` are pre-filled by `render.yaml`.)
-6. Click **Apply** / **Create Resources**. Render will run `./build.sh` and then start the service.
-7. After ~5-7 minutes, Render gives a public URL like `https://ie-valdivia-portal.onrender.com`.
-   - Open it. Should load the home page.
-   - Go to `Perfil` → `Iniciar Sesión` → role `Administrador`, password `12` → enter portal.
-   - Use the floating side buttons to add banners, news, projects, videos, etc. **All changes are saved in MongoDB and visible to every visitor of the URL in real-time (~15s refresh).**
-   - Use the amber key icon (top of the floating panel) to change the admin password to something secure.
+Ver `DEPLOYMENT_MANUS.md` para guía completa paso a paso.
 
-### Important env vars (set in Render dashboard → Environment)
-| Key | Value | Notes |
-|-----|-------|-------|
-| `MONGO_URL` | `mongodb+srv://USER:PASSWORD@...` | **Required.** From MongoDB Atlas. |
-| `DB_NAME` | `ievaldivia` | Any name. Auto-created. |
-| `ADMIN_PASSWORD` | `12` | Initial password; admin can change it from the panel. |
-| `PYTHON_VERSION` | `3.11.9` | Already in render.yaml. |
-| `NODE_VERSION` | `20.11.0` | Already in render.yaml. |
-
-### How it works (single URL)
-- Render runs `./build.sh` which:
-  1. Installs Python deps from `backend/requirements.txt`.
-  2. Installs Node deps and runs `yarn build` inside `frontend/`. This produces `frontend/build/` (the static React app).
-- Then Render runs `cd backend && uvicorn server:app --host 0.0.0.0 --port $PORT`.
-- FastAPI serves:
-  - `/api/*` → JSON API endpoints
-  - `/static/*` → React's static assets
-  - any other path → React's `index.html` (SPA routing)
-
-So one URL serves both frontend and backend. The frontend uses relative paths (`/api`) automatically when `REACT_APP_BACKEND_URL` is empty (which is the production default).
-
-### Local development
 ```bash
-# Backend
-cd backend
-pip install -r requirements.txt
-export MONGO_URL="mongodb://localhost:27017"
-export DB_NAME="ievaldivia"
-uvicorn server:app --reload --port 8001
+# 1. Configura .env basado en .env.example
+cp .env.example .env
 
-# Frontend (separate terminal)
-cd frontend
-yarn install
-echo "REACT_APP_BACKEND_URL=http://localhost:8001" > .env
-yarn start
+# 2. Instala dependencias
+pip install -r requirements.txt
+
+# 3. Local
+uvicorn server:app --host 0.0.0.0 --port 8000
+
+# 4. Render → ver render.yaml
 ```
 
-## Admin usage
-- Log in: Perfil → Iniciar Sesión → Rol = Administrador → contraseña = `12` (cámbiala desde el panel después).
-- Click any floating button on the right side to open an editor modal.
-- All changes are persisted to MongoDB Atlas and visible to all visitors within ~15 seconds.
+## 🔐 Credenciales Admin
 
-## Troubleshooting
-- **Render build fails on `yarn`**: ensure `NODE_VERSION` env var is `20.11.0` (already in render.yaml).
-- **Backend can't connect to MongoDB**: verify `MONGO_URL` value (must include the password) and that Atlas Network Access has `0.0.0.0/0`.
-- **Login as admin fails**: default password is `12` unless you changed `ADMIN_PASSWORD` in Render. If you already changed it from the panel, use the new one.
-- **Forgot admin password**: in Render dashboard, change `ADMIN_PASSWORD` env var, then go to MongoDB Atlas → Browse Collections → `ievaldivia` → `settings` → delete the doc with `_id: "admin_auth"`. Restart Render service. Default `ADMIN_PASSWORD` will apply again.
+⚠️ Las credenciales del administrador principal NO se publican en repositorios públicos.
+Solicítalas al equipo de operaciones o consulta el archivo privado `memory/test_credentials.md` (no commiteado a producción).
+
+## 📡 Datos Reales en Vivo
+
+- ✅ Copernicus Sentinel-5P TROPOMI
+- ✅ Open-Meteo (viento, CH4 ambiental)
+- ✅ Supabase PostgreSQL Cloud (409+ detecciones)
+- ✅ Mapbox GL JS v3
+- ✅ Telegram Bot (@MetanoAlerts_bot)
+- ✅ scikit-learn ML (RandomForest pre-entrenado)
+
+## 📚 Documentación
+
+- API Docs: `/api/docs` (Swagger)
+- ReDoc: `/api/redoc`
+- v5.5 Info: `/api/v55/info`
+
+---
+
+*MetanoSRGAN Elite v5.5 — 2026 — Diseñado para operar 24/7 en producción*
