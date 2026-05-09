@@ -1,0 +1,13 @@
+{
+  "last_sync": "2026-04-27T23:58:36Z",
+  "source_file": "event_master_table_ACTUALIZADA_27_ABRIL.json",
+  "drive_folder": "MetanoSRGAN Elite",
+  "drive_file_id": "1lJIBGvudaBD-d_MLrTpQ4RmF2YngMLVL",
+  "events_count": 409,
+  "sync_interval_min": 60,
+  "data_freshness": "real",
+  "data_source": "Sentinel-5P TROPOMI",
+  "region": "Magdalena Medio, Colombia",
+  "stations": ["Vasconia", "Mariquita", "Barrancabermeja", "Malena", "Miraflores"],
+  "version": "5.0.0"
+}
